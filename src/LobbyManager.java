@@ -27,6 +27,13 @@ public class LobbyManager implements Runnable{
        updateView();
    }
 
+    public synchronized void removePlayer(Player player){
+        for (int i = player.getId(); i < names.size(); i++) {
+            names.get(i).setId(names.get(i).getId()-1);
+        }
+        names.remove(player);
+        controller.getModel().clients = controller.getModel().clients-1;
+    }
     public void run() {
         //TODO el out no es necesario elminar en producción
         closed = false;
@@ -44,27 +51,27 @@ public class LobbyManager implements Runnable{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        int oldid= player.getId();
 //Cambiar forma de cerrado
         while (!closed){
             try {
+                out.println("eres jugador"+player.getId());
                String inputLine = in.readLine();
                 if (inputLine.toLowerCase().equals("bye")){
                     System.out.println("Client (" + clientAddress + ") connection closed\n");
                     closed= true;
                 }
-                out.println("escribe bye para salir");
+
 
             } catch (Exception e) {
                 System.out.println(e);
             }
-        }
 
-        for (int i = player.getId(); i < names.size(); i++) {
-            names.get(i).setId(names.get(i).getId()-1);
         }
-        names.remove(player);
-        controller.getModel().clients = controller.getModel().clients-1;
-        //TODO if Lobby is completed (8 players) send players to next screen
+            removePlayer(player);
+
+
+        //TODO if Lobby is completed (8 players) out the player id to the player and send them to next screen
         try {
             clientSocket.close();
             updateView();
