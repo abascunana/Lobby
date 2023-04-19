@@ -10,7 +10,7 @@ public class LobbyManager implements Runnable{
     private String clientAddress;
     private boolean closed;
     Controller controller;
-    static ArrayList<String> names = new ArrayList<>();
+    static ArrayList<Player> names = new ArrayList<>();
 //TODO cuando un jugador se desconecta, todos los id's que estén por delante de éste se les resta uno (1,2,3x,4,5,6,7,8) --> (1,2,3,4,5,6,7)
     public LobbyManager(Socket clientSocket, String clientAddress, Controller controller) {
         this.clientSocket = clientSocket;
@@ -22,7 +22,7 @@ public class LobbyManager implements Runnable{
         new Thread(controller.getView()).start();
    }
 
-   public synchronized void updateId(String id){
+   public synchronized void updateId(Player id){
        names.add(id);
        updateView();
    }
@@ -30,8 +30,9 @@ public class LobbyManager implements Runnable{
     public void run() {
         //TODO el out no es necesario elminar en producción
         closed = false;
-        String id="jugador nº"+controller.getModel().getClients()+"\n";
-        updateId(id);
+        Player player = new Player(controller.getModel().getClients());
+       // String id="jugador nº"+controller.getModel().getClients()+"\n";
+        updateId(player);
         BufferedReader in = null;
         try {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -58,8 +59,11 @@ public class LobbyManager implements Runnable{
                 System.out.println(e);
             }
         }
-        names.remove(id);
-        controller.getModel().clients = --controller.getModel().clients;
+
+        for (int i = player.getId(); i < names.size(); i++) {
+            names.get(i).setId(names.get(i).getId()-1);
+        }
+        names.remove(player);
         //TODO if Lobby is completed (8 players) send players to next screen
         try {
             clientSocket.close();

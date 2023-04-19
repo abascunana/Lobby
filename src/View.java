@@ -4,8 +4,6 @@ import java.awt.*;
 public class View extends JFrame implements Runnable {
     JTextArea nicks;
     Controller controller;
-    GraphicsDevice myDevice;
-    Window myWindow;
 
 
     public Controller getController() {
@@ -49,7 +47,7 @@ public class View extends JFrame implements Runnable {
             if (controller.getModel().getTc()!= null){
                 nicks.setText("");
                 for (int i = 0; i < controller.getModel().getTc().names.size(); i++) {
-                    nicks.append(controller.getModel().getTc().names.get(i));
+                    nicks.append("jugador nº"+controller.getModel().getTc().names.get(i).getId()+"\n");
                 }
             }
         }
