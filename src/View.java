@@ -17,7 +17,8 @@ public class View extends JFrame implements Runnable {
     View(){
         setTitle("Lobby- Waiting for players...");
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
-       // setUndecorated(true);
+        //TRUE FULLSCREEN
+        //setUndecorated(true);
         setLocationRelativeTo(null);
         add(addBack());
         setVisible(true);

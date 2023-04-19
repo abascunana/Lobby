@@ -63,6 +63,7 @@ public class LobbyManager implements Runnable{
             names.get(i).setId(names.get(i).getId()-1);
         }
         names.remove(player);
+        controller.getModel().clients = controller.getModel().clients-1;
         //TODO if Lobby is completed (8 players) send players to next screen
         try {
             clientSocket.close();
