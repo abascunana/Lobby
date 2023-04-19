@@ -1,4 +1,5 @@
 public class Player {
+//Esta clase sirve para controlar los id's de cada jugador
     public int getId() {
         return id;
     }

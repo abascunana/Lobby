@@ -11,7 +11,7 @@ public class LobbyManager implements Runnable{
     private boolean closed;
     Controller controller;
     static ArrayList<Player> names = new ArrayList<>();
-//TODO cuando un jugador se desconecta, todos los id's que estén por delante de éste se les resta uno (1,2,3x,4,5,6,7,8) --> (1,2,3,4,5,6,7)
+
     public LobbyManager(Socket clientSocket, String clientAddress, Controller controller) {
         this.clientSocket = clientSocket;
         this.clientAddress = clientAddress;
@@ -31,7 +31,6 @@ public class LobbyManager implements Runnable{
         //TODO el out no es necesario elminar en producción
         closed = false;
         Player player = new Player(controller.getModel().getClients());
-       // String id="jugador nº"+controller.getModel().getClients()+"\n";
         updateId(player);
         BufferedReader in = null;
         try {
