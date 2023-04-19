@@ -4,8 +4,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-//TODO Poner rango del 1 al 8 y actualizarlo cada vez que algún jugador se desconecte de el lobby (función síncrona), los jugdores del 1 al 4 son rojos y del 5 al 8 azules
-public class LobbyManager implements Runnable{
+
+//TODO Poner rango del 1 al 8.
+public class LobbyManager implements Runnable {
     private Socket clientSocket;
     private String clientAddress;
     private boolean closed;
@@ -18,24 +19,25 @@ public class LobbyManager implements Runnable{
         this.controller = controller;
         System.out.println("Client connection from " + clientAddress);
     }
-   public synchronized void updateView(){
+
+    public synchronized void updateView() {
         new Thread(controller.getView()).start();
-   }
+    }
 
-   public synchronized void updateId(Player id){
-       names.add(id);
-       updateView();
-   }
+    public synchronized void updateId(Player id) {
+        names.add(id);
+        updateView();
+    }
 
-    public synchronized void removePlayer(Player player){
+    public synchronized void removePlayer(Player player) {
         for (int i = player.getId(); i < names.size(); i++) {
-            names.get(i).setId(names.get(i).getId()-1);
+            names.get(i).setId(names.get(i).getId() - 1);
         }
         names.remove(player);
-        controller.getModel().clients = controller.getModel().clients-1;
+        controller.getModel().clients = controller.getModel().clients - 1;
     }
+
     public void run() {
-        //TODO el out no es necesario elminar en producción
         closed = false;
         Player player = new Player(controller.getModel().getClients());
         updateId(player);
@@ -51,27 +53,23 @@ public class LobbyManager implements Runnable{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        int oldid= player.getId();
+
 //Cambiar forma de cerrado
-        while (!closed){
+        while (!closed) {
             try {
-                out.println("eres jugador"+player.getId());
-               String inputLine = in.readLine();
-                if (inputLine.toLowerCase().equals("bye")){
+                out.println("eres jugador" + player.getId());
+                String inputLine = in.readLine();
+                if (inputLine.toLowerCase().equals("bye")) {
                     System.out.println("Client (" + clientAddress + ") connection closed\n");
-                    closed= true;
+                    closed = true;
                 }
-
-
             } catch (Exception e) {
                 System.out.println(e);
             }
 
         }
-            removePlayer(player);
-
-
-        //TODO if Lobby is completed (8 players) out the player id to the player and send them to next screen
+        removePlayer(player);
+        //TODO if Lobby is completed (8 players) out the player id (print) to the player and send them to next screen (project)
         try {
             clientSocket.close();
             updateView();

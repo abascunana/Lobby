@@ -14,7 +14,7 @@ public class View extends JFrame implements Runnable {
         this.controller = controller;
     }
 
-    View(){
+    View() {
         setTitle("Lobby- Waiting for players...");
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
         //TRUE FULLSCREEN
@@ -23,17 +23,19 @@ public class View extends JFrame implements Runnable {
         add(addBack());
         setVisible(true);
     }
-    private JLabel addBack(){
+
+    private JLabel addBack() {
         JLabel myLabel = new JLabel(new ImageIcon("src/assets/space.jpg"));
         myLabel.setLayout(new BorderLayout());
         myLabel.add(addComponents(), BorderLayout.WEST);
         return myLabel;
     }
-    private JPanel addComponents(){
-        JPanel panel= new JPanel();
+
+    private JPanel addComponents() {
+        JPanel panel = new JPanel();
         nicks = new JTextArea();
         nicks.setOpaque(false);
-        nicks.setSize(500,500);
+        nicks.setSize(500, 500);
         panel.add(nicks);
         Font font = new Font("Times New Roman", Font.BOLD, 50);
         nicks.setFont(font);
@@ -45,11 +47,11 @@ public class View extends JFrame implements Runnable {
 
     @Override
     public void run() {
-            if (controller.getModel().getTc()!= null){
-                nicks.setText("");
-                for (int i = 0; i < controller.getModel().getTc().names.size(); i++) {
-                    nicks.append("jugador nº"+controller.getModel().getTc().names.get(i).getId()+"\n");
-                }
+        if (controller.getModel().getTc() != null) {
+            nicks.setText("");
+            for (int i = 0; i < controller.getModel().getTc().names.size(); i++) {
+                nicks.append("jugador nº" + controller.getModel().getTc().names.get(i).getId() + "\n");
             }
         }
+    }
 }
