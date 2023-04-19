@@ -4,27 +4,34 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-
-public class ThreadedClient implements Runnable{
+//TODO Poner rango del 1 al 8 y actualizarlo cada vez que algún jugador se desconecte de el lobby (función síncrona), los jugdores del 1 al 4 son rojos y del 5 al 8 azules
+public class LobbyManager implements Runnable{
     private Socket clientSocket;
     private String clientAddress;
     private boolean closed;
     Controller controller;
     static ArrayList<String> names = new ArrayList<>();
-    public ThreadedClient(Socket clientSocket, String clientAddress,Controller controller) {
+//TODO cuando un jugador se desconecta, todos los id's que estén por delante de éste se les resta uno (1,2,3x,4,5,6,7,8) --> (1,2,3,4,5,6,7)
+    public LobbyManager(Socket clientSocket, String clientAddress, Controller controller) {
         this.clientSocket = clientSocket;
         this.clientAddress = clientAddress;
         this.controller = controller;
         System.out.println("Client connection from " + clientAddress);
     }
-   public synchronized void actualizarView(){
+   public synchronized void updateView(){
         new Thread(controller.getView()).start();
    }
+
+   public synchronized void updateId(String id){
+       names.add(id);
+       updateView();
+   }
+
     public void run() {
+        //TODO el out no es necesario elminar en producción
         closed = false;
-        String id="jugador nº"+controller.getModel().getClientes()+"\n";
-        names.add(id);
-        actualizarView();
+        String id="jugador nº"+controller.getModel().getClients()+"\n";
+        updateId(id);
         BufferedReader in = null;
         try {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -37,7 +44,7 @@ public class ThreadedClient implements Runnable{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
+//Cambiar forma de cerrado
         while (!closed){
             try {
                String inputLine = in.readLine();
@@ -52,9 +59,11 @@ public class ThreadedClient implements Runnable{
             }
         }
         names.remove(id);
+        controller.getModel().clients = --controller.getModel().clients;
+        //TODO if Lobby is completed (8 players) send players to next screen
         try {
             clientSocket.close();
-            actualizarView();
+            updateView();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

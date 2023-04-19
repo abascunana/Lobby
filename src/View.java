@@ -4,6 +4,9 @@ import java.awt.*;
 public class View extends JFrame implements Runnable {
     JTextArea nicks;
     Controller controller;
+    GraphicsDevice myDevice;
+    Window myWindow;
+
 
     public Controller getController() {
         return controller;
@@ -14,25 +17,26 @@ public class View extends JFrame implements Runnable {
     }
 
     View(){
-        setTitle("Lobby");
-        setSize(new Dimension(1920,1080));
+        setTitle("Lobby- Waiting for players...");
+        setSize(Toolkit.getDefaultToolkit().getScreenSize());
+       // setUndecorated(true);
         setLocationRelativeTo(null);
-        add(crearFondo());
+        add(addBack());
         setVisible(true);
     }
-    private JLabel crearFondo(){
+    private JLabel addBack(){
         JLabel myLabel = new JLabel(new ImageIcon("src/assets/space.jpg"));
         myLabel.setLayout(new BorderLayout());
-        myLabel.add(crearComponentes(), BorderLayout.WEST);
+        myLabel.add(addComponents(), BorderLayout.WEST);
         return myLabel;
     }
-    private JPanel crearComponentes(){
+    private JPanel addComponents(){
         JPanel panel= new JPanel();
         nicks = new JTextArea();
         nicks.setOpaque(false);
         nicks.setSize(500,500);
-       panel.add(nicks);
-        Font font = new Font("Arial", Font.PLAIN, 80);
+        panel.add(nicks);
+        Font font = new Font("Times New Roman", Font.BOLD, 50);
         nicks.setFont(font);
         nicks.setForeground(Color.white);
         nicks.setEditable(false);

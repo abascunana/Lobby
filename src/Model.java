@@ -1,33 +1,26 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class Model implements Runnable{
 
+   public static int clients = 0;
 
-    //Esta clase creará un servidor que recoja nicks y los mande a la vista.
-   private static int clientes = 0;
-    ServerSocket serverSocket = null;
+   ServerSocket serverSocket = null;
     Controller controller;
+    LobbyManager lm;
 
-
-    ThreadedClient tc;
-
-
-    public ThreadedClient getTc() {
-        return tc;
+    public LobbyManager getTc() {
+        return lm;
     }
-
     public Controller getController() {
         return controller;
     }
-    public static int getClientes() {
-        return clientes;
+    public static int getClients() {
+        return clients;
     }
-
-    public static void setClientes(int clientes) {
-        Model.clientes = clientes;
+    public static void setClients(int clients) {
+        Model.clients = clients;
     }
     public void setController(Controller controller) {
         this.controller = controller;
@@ -48,17 +41,16 @@ public class Model implements Runnable{
             try {
                 Socket clientSocket;
                 String clientAddress;
-
                 clientSocket = serverSocket.accept();
-
                 clientAddress = clientSocket.getInetAddress().getHostAddress();
-                tc = new ThreadedClient(clientSocket, clientAddress,this.controller);
-                new Thread(tc).start();
-                clientes++;
+                lm = new LobbyManager(clientSocket, clientAddress,this.controller);
+                new Thread(lm).start();
+                clients++;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println(clientes);
+            System.out.println(clients);
+
         }
     }
 }
