@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -37,7 +38,23 @@ public class Model implements Runnable {
         }
 
     }
-
+public void comprobarJugadores(Socket clientSocket){
+    PrintWriter out = null;
+    try {
+        out = new PrintWriter(clientSocket.getOutputStream(), true);
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+    if (lm.names.size() > 8){
+        try {
+            out.println("You can't connect to this game due to high demand of players, wait until the next round");
+            clientSocket.close();
+            throw new Exception("limit reached, player cannot connect");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
     @Override
     public void run() {
         while (true) {
@@ -47,7 +64,9 @@ public class Model implements Runnable {
                 String clientAddress;
                 clientSocket = serverSocket.accept();
                 clientAddress = clientSocket.getInetAddress().getHostAddress();
+
                 lm = new LobbyManager(clientSocket, clientAddress, this.controller);
+                comprobarJugadores(clientSocket);
                 new Thread(lm).start();
                 clients++;
             } catch (IOException e) {

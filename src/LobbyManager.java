@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Random;
 
 //TODO Poner rango del 1 al 8.
 public class LobbyManager implements Runnable {
@@ -12,6 +13,15 @@ public class LobbyManager implements Runnable {
     private boolean closed;
     Controller controller;
     static ArrayList<Player> names = new ArrayList<>();
+   private Player player;
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 
     public LobbyManager(Socket clientSocket, String clientAddress, Controller controller) {
         this.clientSocket = clientSocket;
@@ -28,7 +38,14 @@ public class LobbyManager implements Runnable {
         names.add(id);
         updateView();
     }
-
+public void addTeam(Player player){
+    if(player.getId()>4){
+        player.setEquipo("rojo");
+    }
+    else {
+        player.setEquipo("azul");
+    }
+}
     public synchronized void removePlayer(Player player) {
         for (int i = player.getId(); i < names.size(); i++) {
             names.get(i).setId(names.get(i).getId() - 1);
@@ -38,21 +55,28 @@ public class LobbyManager implements Runnable {
     }
 
     public void run() {
-        closed = false;
-        Player player = new Player(controller.getModel().getClients());
-        updateId(player);
+        PrintWriter out = null;
         BufferedReader in = null;
+
         try {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        PrintWriter out = null;
+
         try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        closed = false;
+        player = new Player(controller.getModel().getClients());
+
+        updateId(player);
+        addTeam(player);
+
+
 
 //Cambiar forma de cerrado
         while (!closed) {
