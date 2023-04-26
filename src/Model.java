@@ -9,6 +9,7 @@ public class Model implements Runnable {
     ServerSocket serverSocket = null;
     Controller controller;
     LobbyManager lm;
+    GameRules gameRules;
 
     public LobbyManager getTc() {
         return lm;
@@ -30,12 +31,14 @@ public class Model implements Runnable {
         this.controller = controller;
     }
 
-    public Model() {
+    public Model(GameRules gameRules) {
+        this.gameRules = gameRules;
         try {
             serverSocket = new ServerSocket(1234);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
     }
 public void comprobarJugadores(Socket clientSocket){
@@ -45,7 +48,7 @@ public void comprobarJugadores(Socket clientSocket){
     } catch (IOException e) {
         throw new RuntimeException(e);
     }
-    if (lm.names.size() > 8){
+    if (clients > gameRules.getNumPlayers()){
         try {
             out.println("You can't connect to this game due to high demand of players, wait until the next round");
             clientSocket.close();

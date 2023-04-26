@@ -4,24 +4,17 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Random;
 
-//TODO Poner rango del 1 al 8.
+
 public class LobbyManager implements Runnable {
     private Socket clientSocket;
     private String clientAddress;
     private boolean closed;
     Controller controller;
-    static ArrayList<Player> names = new ArrayList<>();
-   private Player player;
 
-    public Player getPlayer() {
-        return player;
-    }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
+
+
 
     public LobbyManager(Socket clientSocket, String clientAddress, Controller controller) {
         this.clientSocket = clientSocket;
@@ -34,25 +27,8 @@ public class LobbyManager implements Runnable {
         new Thread(controller.getView()).start();
     }
 
-    public synchronized void updateId(Player id) {
-        names.add(id);
-        updateView();
-    }
-public void addTeam(Player player){
-    if(player.getId()>4){
-        player.setEquipo("rojo");
-    }
-    else {
-        player.setEquipo("azul");
-    }
-}
-    public synchronized void removePlayer(Player player) {
-        for (int i = player.getId(); i < names.size(); i++) {
-            names.get(i).setId(names.get(i).getId() - 1);
-        }
-        names.remove(player);
-        controller.getModel().clients = controller.getModel().clients - 1;
-    }
+
+
 
     public void run() {
         PrintWriter out = null;
@@ -71,29 +47,28 @@ public void addTeam(Player player){
         }
 
         closed = false;
-        player = new Player(controller.getModel().getClients());
-
-        updateId(player);
-        addTeam(player);
 
 
 
-//Cambiar forma de cerrado
+
+//TODO Cambiar forma de cerrado
         while (!closed) {
             try {
-                out.println("eres jugador" + player.getId());
+                out.println("eres jugador" + controller.getModel().clients);
+                updateView();
                 String inputLine = in.readLine();
                 if (inputLine.toLowerCase().equals("bye")) {
                     System.out.println("Client (" + clientAddress + ") connection closed\n");
                     closed = true;
+                    controller.getModel().clients = controller.getModel().clients-1;
                 }
             } catch (Exception e) {
                 System.out.println(e);
             }
 
         }
-        removePlayer(player);
-        //TODO if Lobby is completed (8 players) out the player id (print) to the player and send them to next screen (project)
+
+
         try {
             clientSocket.close();
             updateView();
