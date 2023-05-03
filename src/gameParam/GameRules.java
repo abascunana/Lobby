@@ -1,3 +1,5 @@
+package gameParam;
+
 public class GameRules {
     public int numPlayers;
     public int endTime;

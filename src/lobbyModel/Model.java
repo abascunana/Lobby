@@ -1,3 +1,8 @@
+package lobbyModel;
+
+import gameParam.GameRules;
+import lobbyController.Controller;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -48,7 +53,7 @@ public void comprobarJugadores(Socket clientSocket){
     } catch (IOException e) {
         throw new RuntimeException(e);
     }
-    if (clients > gameRules.getNumPlayers()){
+    if (clients == gameRules.getNumPlayers()){
         try {
             out.println("You can't connect to this game due to high demand of players, wait until the next round");
             clientSocket.close();

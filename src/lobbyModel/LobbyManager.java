@@ -1,9 +1,12 @@
+package lobbyModel;
+
+import lobbyController.Controller;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 
 
 public class LobbyManager implements Runnable {
@@ -23,7 +26,7 @@ public class LobbyManager implements Runnable {
         System.out.println("Client connection from " + clientAddress);
     }
 
-    public synchronized void updateView() {
+    public void updateView() {
         new Thread(controller.getView()).start();
     }
 
@@ -62,12 +65,17 @@ public class LobbyManager implements Runnable {
                     closed = true;
                     controller.getModel().clients = controller.getModel().clients-1;
                 }
+                //if player is master
+                if (inputLine.toLowerCase().equals("up")) {
+                 controller.getView().updateParam();
+                }
+                if (inputLine.toLowerCase().equals("select")) {
+                    controller.getView().selectParam();
+                }
             } catch (Exception e) {
                 System.out.println(e);
             }
-
         }
-
 
         try {
             clientSocket.close();
