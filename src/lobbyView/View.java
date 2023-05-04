@@ -1,5 +1,6 @@
 package lobbyView;
 
+import gameParam.GameRules;
 import lobbyController.Controller;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ public class View extends JFrame implements Runnable {
     JLabel background;
     String[] paramList = new String[]{"back1","back2","back3"};
     String[] backPath=new String[]{"src/gameAssets/1space.jpg","src/gameAssets/2space.jpg","src/gameAssets/3space.jpg"};
-
+    static int position;
 
 
     public int getPosition() {
@@ -26,7 +27,7 @@ public class View extends JFrame implements Runnable {
         this.position = position;
     }
 
-    int position =0;
+
 
 
     public Controller getController() {
@@ -41,7 +42,7 @@ public class View extends JFrame implements Runnable {
         setTitle("Lobby- Waiting for players...");
         setSize(Toolkit.getDefaultToolkit().getScreenSize());
         //TRUE FULLSCREEN
-        //setUndecorated(true);
+       // setUndecorated(true);
         setLocationRelativeTo(null);
         add(addBack());
         setVisible(true);
@@ -80,7 +81,6 @@ public class View extends JFrame implements Runnable {
     }
     public void selectParam(){
      background.setIcon(new ImageIcon(backPath[position]));
-     controller.getModel().getTc().updateView();
     }
     public void updateParam(){
         parameter.setText("");
@@ -93,7 +93,7 @@ public class View extends JFrame implements Runnable {
             }
         }
     }
-    private void setPos(){
+    public void setPos(){
         position++;
         if (position > paramList.length-1){
             position=0;
@@ -125,10 +125,9 @@ public class View extends JFrame implements Runnable {
     }
     @Override
     public void run() {
-        players.setText("");
             if (controller.getModel().getTc() != null) {
                 players.setText("Total de jugadores:"+controller.getModel().clients);
-                setPos();
+
             }
         }
 

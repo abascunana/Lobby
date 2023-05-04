@@ -67,6 +67,7 @@ public class LobbyManager implements Runnable {
                 }
                 //if player is master
                 if (inputLine.toLowerCase().equals("up")) {
+                    controller.getView().setPos();
                  controller.getView().updateParam();
                 }
                 if (inputLine.toLowerCase().equals("select")) {
