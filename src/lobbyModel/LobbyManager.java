@@ -66,7 +66,7 @@ public class LobbyManager implements Runnable {
                     controller.getModel().clients = controller.getModel().clients-1;
                 }
                 //if player is master
-                if (inputLine.toLowerCase().equals("up")) {
+                if (inputLine.toLowerCase().equals("mv")) {
                     controller.getView().setPos();
                  controller.getView().updateParam();
                 }
